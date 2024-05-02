@@ -29,6 +29,9 @@ public class User {
     @Column(nullable = false)
     private Date createdAt;
 
+    @Column(nullable = false)
+    private Date updatedAt; 
+    
     // Getters and Setters
 
     public Integer getId() {
@@ -69,5 +72,13 @@ public class User {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
