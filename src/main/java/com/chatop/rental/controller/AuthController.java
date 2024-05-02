@@ -5,6 +5,8 @@ import com.chatop.rental.model.User;
 import com.chatop.rental.service.JWTService;
 import com.chatop.rental.service.UserService;
 
+import jakarta.validation.Valid;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -35,8 +37,8 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody Map<String, String> payload) {
-        User newUser = userService.registerUser(payload.get("email"), payload.get("name"), payload.get("password"));
+    public ResponseEntity<?> registerUser(@RequestBody @Valid User user) {
+        User newUser = userService.registerUser(user.getEmail(), user.getName(), user.getPassword());
         if (newUser == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "error"));
         }
