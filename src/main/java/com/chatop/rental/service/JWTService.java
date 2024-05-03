@@ -2,6 +2,8 @@ package com.chatop.rental.service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -17,6 +19,9 @@ public class JWTService {
 
 	private JwtEncoder jwtEncoder;
 	
+	@Value("${jwt.expiration}")
+	private long jwtExpiration; 
+	
 	public JWTService(JwtEncoder jwtEncoder) {
 		this.jwtEncoder = jwtEncoder;
 	}
@@ -26,7 +31,7 @@ public class JWTService {
      		JwtClaimsSet claims = JwtClaimsSet.builder()
               		  .issuer("self")
                		  .issuedAt(now)
-              		  .expiresAt(now.plus(1, ChronoUnit.DAYS))
+               		  .expiresAt(now.plus(jwtExpiration, ChronoUnit.SECONDS))
               		  .subject(authentication.getName())
               		  .build();
 		JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);

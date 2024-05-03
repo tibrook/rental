@@ -3,8 +3,11 @@ package com.chatop.rental.configuration;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,10 +28,24 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @Configuration
 public class SpringSecurityConfig {
-    private String jwtKey = "3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b";
+	
 
+
+	@Value("${jwt.expiration}")
+    private long jwtExpiration; 
+
+	@Value("${JWT_SECRET}")
+	private String jwtSecret;
+	
     @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
+    
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+        configurer.setLocation(new FileSystemResource(".env"));
+        return configurer;
+    }
 
     /**
      * Configures the security filter chain that applies to incoming HTTP requests.
@@ -92,7 +109,7 @@ public class SpringSecurityConfig {
      */
     @Bean
     public JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), "HmacSHA256");
+        SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
     }
 
@@ -103,8 +120,8 @@ public class SpringSecurityConfig {
      */
     @Bean
     public JwtEncoder jwtEncoder() {
-        return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
+        return new NimbusJwtEncoder(new ImmutableSecret<>(jwtSecret.getBytes()));
     }
 
-    
+   
 }
