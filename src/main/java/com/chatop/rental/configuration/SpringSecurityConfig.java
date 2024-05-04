@@ -29,9 +29,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @Configuration
 public class SpringSecurityConfig {
 	
-	@Value("${jwt.expiration}")
-    private long jwtExpiration; 
-
 	@Value("${JWT_SECRET}")
 	private String jwtSecret;
 	
