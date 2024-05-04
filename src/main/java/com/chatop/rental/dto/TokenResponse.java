@@ -1,14 +1,10 @@
 package com.chatop.rental.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class TokenResponse {
-    private String token;
-
-    public TokenResponse(String token) {
-        this.token = token;
-    }
-
-    // Getter
-    public String getToken() {
-        return token;
-    }
+    private final String token;
 }

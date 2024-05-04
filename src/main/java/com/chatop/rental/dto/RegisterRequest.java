@@ -4,29 +4,25 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 
+@Getter
 public class RegisterRequest {
 	
 	@Email
     @NotEmpty
-    private String email;
+    private final String email;
     
     @Size(min = 8)
     @NotEmpty
-    private String password;
+    private final String password;
     
     @NotBlank
-    private String name;
+    private final String name;
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
+    public RegisterRequest(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
     }
 }
