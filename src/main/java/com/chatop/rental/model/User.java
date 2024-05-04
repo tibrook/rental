@@ -23,16 +23,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Email(message = "Email should be valid")
-    @NotEmpty(message = "Email cannot be empty")
+    @Email
+    @NotEmpty
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Size
     @Column(nullable = false)
     private String password;
 
-    @NotBlank(message = "Name cannot be blank")
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
