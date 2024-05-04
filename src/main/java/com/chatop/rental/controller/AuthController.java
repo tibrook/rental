@@ -21,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
@@ -52,16 +53,16 @@ public class AuthController {
     content = @Content(mediaType = "application/json",
                        examples = @ExampleObject(name = "Empty object", value = "{}")))    
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
+    public TokenResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
         User newUser = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());
         if (newUser == null) {
-            return ResponseEntity.badRequest().body("{}");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "{}");
         }
         
         Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtService.generateToken(authentication);
-        return ResponseEntity.ok(new TokenResponse(token));
+        return new TokenResponse(token);
     }
       
     @Operation(summary = "Login a user", description = "Logs in a user and returns a JWT token")
@@ -74,20 +75,16 @@ public class AuthController {
                            schema = @Schema(implementation = ErrorResponse.class),
                            examples = @ExampleObject(name = "Unauthorized", value = "{\"message\": \"error\"}")))
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                		loginRequest.getLogin(), 
-                		loginRequest.getPassword()
-                )
-            );
+    public TokenResponse loginUser(@RequestBody LoginRequest loginRequest) {
+    	Authentication authentication = authenticationManager.authenticate(
+	        new UsernamePasswordAuthenticationToken(
+	            loginRequest.getLogin(), 
+	            loginRequest.getPassword()
+	        )
+	    );
 
-            String token = jwtService.generateToken(authentication);
-            return ResponseEntity.ok(new TokenResponse(token));
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("error"));
-        }
+	    String token = jwtService.generateToken(authentication);
+	    return new TokenResponse(token);
     }
 
     @Operation(summary = "Get user details", description = "Returns user details of the currently authenticated user")
@@ -99,15 +96,14 @@ public class AuthController {
     content = @Content(mediaType = "application/json",
                        examples = @ExampleObject(name = "Empty object", value = "{}")))    
     @GetMapping("/me")
-    public ResponseEntity<?> getUserInfo(Authentication authentication) {
+    public UserDto getUserInfo(Authentication authentication) {
     	System.out.println("GetUserInfo****");
 
         String email = authentication.getName(); 
         User user = userService.findByEmail(email);
         if (user == null) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-        UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
-        return ResponseEntity.ok(userDto);
+        return new UserDto(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
     }
 }

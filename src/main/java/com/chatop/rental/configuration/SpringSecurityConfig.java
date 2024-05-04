@@ -56,9 +56,8 @@ public class SpringSecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/register", "/api/auth/login","/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated())
-            .oauth2ResourceServer(oauth2 -> oauth2
-            	.jwt(Customizer.withDefaults()) 
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint()));
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+//                .authenticationEntryPoint(jwtAuthenticationEntryPoint()));
           return http.build();
     }
 
@@ -67,14 +66,14 @@ public class SpringSecurityConfig {
      * This method customizes the response to use JSON format and return a 401 status code.
      * @return an instance of AuthenticationEntryPoint that handles authentication failures.
      */
-    @Bean
-    public AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
-        return (request, response, authException) -> {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{}");
-        };
-    }
+//    @Bean
+//    public AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+//        return (request, response, authException) -> {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.setContentType("application/json");
+//            response.getWriter().write("{}");
+//        };
+//    }
 
     /**
      * Exposes the default AuthenticationManager as a Bean.
