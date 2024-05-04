@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,13 +62,14 @@ public class AuthController {
                        examples = @ExampleObject(name = "Empty object", value = "{}")))    
     @PostMapping("/register")
     public TokenResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
-        log.info("registerUser {}", registerRequest.getEmail());
-        User newUser = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());
-        if (newUser == null) {
+        log.info("Registering user {}", registerRequest.getEmail());
+        Optional<User> newUserOptional = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());
+        if (!newUserOptional.isPresent()) {
             log.error("Registration failed for {}", registerRequest.getEmail());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "{}");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists");
         }
         
+        User newUser = newUserOptional.get();
         Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtService.generateToken(authentication);
@@ -112,11 +114,8 @@ public class AuthController {
         log.info("getUserInfo {} - Fetching user info for {}", authentication.getName());
         
         String email = authentication.getName(); 
-        User user = userService.findByEmail(email);
-        if (user == null) {
-            log.error("User not found for email {}", email);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         UserDto userDto = modelMapper.map(user, UserDto.class);
         return userDto;    
     }

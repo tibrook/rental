@@ -1,10 +1,12 @@
 package com.chatop.rental.service;
 
+import java.util.Optional;
+
 import com.chatop.rental.model.User;
 
 public interface UserService {
-    User registerUser(String email, String name, String password);
+  	Optional<User> registerUser(String email, String name, String password);
     boolean authenticateUser(String email, String password);
-    User getUserById(Long userId);
-    User findByEmail(String email);
+    Optional<User> getUserById(Long userId);
+    Optional<User> findByEmail(String email);
 }
