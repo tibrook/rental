@@ -29,11 +29,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
 	private final JWTService jwtService;
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
@@ -54,14 +56,17 @@ public class AuthController {
                        examples = @ExampleObject(name = "Empty object", value = "{}")))    
     @PostMapping("/register")
     public TokenResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
+        log.info("registerUser {}", registerRequest.getEmail());
         User newUser = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());
         if (newUser == null) {
+            log.error("Registration failed for {}", registerRequest.getEmail());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "{}");
         }
         
         Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtService.generateToken(authentication);
+        log.info("User registered successfully {}", newUser.getEmail());
         return new TokenResponse(token);
     }
       
@@ -76,6 +81,7 @@ public class AuthController {
                            examples = @ExampleObject(name = "Unauthorized", value = "{\"message\": \"error\"}")))
     @PostMapping("/login")
     public TokenResponse loginUser(@RequestBody LoginRequest loginRequest) {
+        log.info("login {}", loginRequest.getLogin());
     	Authentication authentication = authenticationManager.authenticate(
 	        new UsernamePasswordAuthenticationToken(
 	            loginRequest.getLogin(), 
@@ -84,6 +90,7 @@ public class AuthController {
 	    );
 
 	    String token = jwtService.generateToken(authentication);
+        log.info("Login successful for {}", loginRequest.getLogin());
 	    return new TokenResponse(token);
     }
 
@@ -97,11 +104,12 @@ public class AuthController {
                        examples = @ExampleObject(name = "Empty object", value = "{}")))    
     @GetMapping("/me")
     public UserDto getUserInfo(Authentication authentication) {
-    	System.out.println("GetUserInfo****");
-
+        log.info("getUserInfo {} - Fetching user info for {}", authentication.getName());
+        
         String email = authentication.getName(); 
         User user = userService.findByEmail(email);
         if (user == null) {
+            log.error("User not found for email {}", email);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         return new UserDto(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
