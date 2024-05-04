@@ -29,6 +29,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @RestController
@@ -39,7 +41,10 @@ public class AuthController {
 	private final JWTService jwtService;
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-	
+    
+    @Autowired
+    private ModelMapper modelMapper;
+    
     @Autowired
     public AuthController(UserService userService, AuthenticationManager authenticationManager, JWTService jwtService) {
         this.userService = userService;
@@ -112,6 +117,7 @@ public class AuthController {
             log.error("User not found for email {}", email);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-        return new UserDto(user.getId(), user.getEmail(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        return userDto;    
     }
 }
