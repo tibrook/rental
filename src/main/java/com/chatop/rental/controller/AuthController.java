@@ -13,12 +13,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,6 +48,14 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
     }
+    
+    private TokenResponse createTokenResponse(String email) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, new ArrayList<>());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtService.generateToken(authentication);
+        log.info("Token generated for {}", email);
+        return new TokenResponse(token);
+    }
 
     @Operation(summary = "Register a new user", description = "Registers a new user and returns a JWT token")
     @ApiResponse(responseCode = "200", description = "Successful registration",
@@ -61,16 +66,14 @@ public class AuthController {
                        examples = @ExampleObject(name = "Empty object", value = "{}")))    
     @PostMapping("/register")
     public TokenResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
-        log.info("Registering user {}", registerRequest.getEmail());
-        
-        Optional<User> newUserOptional = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());       
-        User newUser = newUserOptional.get();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.info("User registered successfully {}", newUser.getEmail());
-        return new TokenResponse(jwtService.generateToken(authentication));
+        log.info("login {}", registerRequest.getEmail());
+
+        User newUser = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword())
+                                  .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists"));
+        return createTokenResponse(newUser.getEmail());
     }
-      
+     
+    
     @Operation(summary = "Login a user", description = "Logs in a user and returns a JWT token")
     @ApiResponse(responseCode = "200", description = "Successful login",
         content = @Content(mediaType = "application/json",
@@ -83,18 +86,13 @@ public class AuthController {
     @PostMapping("/login")
     public TokenResponse loginUser(@RequestBody LoginRequest loginRequest) {
         log.info("login {}", loginRequest.getLogin());
-        
-    	Authentication authentication = authenticationManager.authenticate(
-	        new UsernamePasswordAuthenticationToken(
-	            loginRequest.getLogin(), 
-	            loginRequest.getPassword()
-	        )
-	    );
 
-        log.info("Login successful for {}", loginRequest.getLogin());
-	    return new TokenResponse(jwtService.generateToken(authentication));
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword())
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return new TokenResponse(jwtService.generateToken(authentication));
     }
-
     @Operation(summary = "Get user details", description = "Returns user details of the currently authenticated user")
     @ApiResponse(responseCode = "200", description = "User details retrieved successfully",
         content = @Content(mediaType = "application/json",
