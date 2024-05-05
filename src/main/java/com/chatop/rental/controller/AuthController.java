@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -63,18 +62,13 @@ public class AuthController {
     @PostMapping("/register")
     public TokenResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
         log.info("Registering user {}", registerRequest.getEmail());
-        Optional<User> newUserOptional = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());
-        if (!newUserOptional.isPresent()) {
-            log.error("Registration failed for {}", registerRequest.getEmail());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists");
-        }
         
+        Optional<User> newUserOptional = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());       
         User newUser = newUserOptional.get();
         Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtService.generateToken(authentication);
         log.info("User registered successfully {}", newUser.getEmail());
-        return new TokenResponse(token);
+        return new TokenResponse(jwtService.generateToken(authentication));
     }
       
     @Operation(summary = "Login a user", description = "Logs in a user and returns a JWT token")
@@ -89,6 +83,7 @@ public class AuthController {
     @PostMapping("/login")
     public TokenResponse loginUser(@RequestBody LoginRequest loginRequest) {
         log.info("login {}", loginRequest.getLogin());
+        
     	Authentication authentication = authenticationManager.authenticate(
 	        new UsernamePasswordAuthenticationToken(
 	            loginRequest.getLogin(), 
@@ -96,9 +91,8 @@ public class AuthController {
 	        )
 	    );
 
-	    String token = jwtService.generateToken(authentication);
         log.info("Login successful for {}", loginRequest.getLogin());
-	    return new TokenResponse(token);
+	    return new TokenResponse(jwtService.generateToken(authentication));
     }
 
     @Operation(summary = "Get user details", description = "Returns user details of the currently authenticated user")
