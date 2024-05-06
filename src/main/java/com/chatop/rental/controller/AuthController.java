@@ -32,7 +32,6 @@ public class AuthController {
 
     private final UserService userService;
     
-
     @Autowired
     private AuthService authService;
     @Autowired
