@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -42,8 +41,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setName(name);
-        newUser.setCreatedAt(new Date());
-        newUser.setUpdatedAt(new Date());
         log.info("New user registered with email: {}", email);
         return Optional.of(userRepository.save(newUser));
     }

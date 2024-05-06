@@ -36,10 +36,8 @@ public class RentalServiceImpl implements RentalService {
             rental.setPrice(rentalRequest.getPrice());
             rental.setDescription(rentalRequest.getDescription());
             rental.setPictureUrl(imageUrl);
-            rental.setCreatedAt(new java.util.Date());
-            rental.setUpdatedAt(new java.util.Date());
             rentalRepository.save(rental);
-            log.info("createRental {} Rental successfully created {}", rental);
+            log.info("Rental successfully created with ID {}", rental.getId());
             return new MessageResponse("Rental created!");
         });
     }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Table(name = "rentals")
 @Data
@@ -31,10 +33,12 @@ public class Rental {
     @Column(name = "owner_id", nullable = false)
     private Integer ownerId; 
     
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date createdAt;
 
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date updatedAt;
