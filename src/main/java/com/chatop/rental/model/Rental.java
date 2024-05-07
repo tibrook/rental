@@ -17,10 +17,10 @@ public class Rental {
 
     @Column(nullable = false)
     private String name;
-
+    
     @Column(nullable = false)
-    private Integer surface;
-
+    private Double surface;
+    
     @Column(nullable = false)
     private Double price;
 

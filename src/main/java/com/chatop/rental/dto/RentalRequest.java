@@ -18,7 +18,7 @@ public class RentalRequest {
 
     @NotNull(message = "Surface cannot be null")
     @Min(value = 1, message = "Surface must be at least 1 square meter")
-    private Integer surface;
+    private Double surface;
 
     @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.1", message = "Minimum price must be at least 0.1")

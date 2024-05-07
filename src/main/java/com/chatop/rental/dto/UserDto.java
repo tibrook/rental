@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @NoArgsConstructor  
 @AllArgsConstructor
@@ -18,7 +19,9 @@ public class UserDto {
     private String email;
     private String name;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "UTC")
+    @JsonProperty("created_at")
     private Date createdAt;
+    @JsonProperty("updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "UTC")
     private Date updatedAt;
 }
