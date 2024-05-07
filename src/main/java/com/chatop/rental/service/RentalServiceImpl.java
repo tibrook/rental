@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chatop.rental.dto.requests.RentalRequest;
+import com.chatop.rental.dto.requests.UpdateRentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.dto.responses.RentalDetailDto;
 import com.chatop.rental.dto.responses.RentalDto;
@@ -69,6 +70,17 @@ public class RentalServiceImpl implements RentalService {
                     log.info("Rental found: {}", rental);  
                     return modelMapper.map(rental, RentalDetailDto.class);
                 });
+    }
+    @Override
+    public Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest) {
+        return rentalRepository.findById(rentalId).map(rental -> {
+            rental.setName(rentalRequest.getName());
+            rental.setSurface(rentalRequest.getSurface());
+            rental.setPrice(rentalRequest.getPrice());
+            rental.setDescription(rentalRequest.getDescription());
+            rentalRepository.save(rental);
+            return new MessageResponse("Rental updated!");
+        });
     }
 
 }

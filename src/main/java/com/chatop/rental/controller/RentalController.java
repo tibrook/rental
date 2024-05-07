@@ -1,6 +1,7 @@
 package com.chatop.rental.controller;
 
 import com.chatop.rental.dto.requests.RentalRequest;
+import com.chatop.rental.dto.requests.UpdateRentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.dto.responses.RentalDetailDto;
 import com.chatop.rental.dto.responses.RentalDto;
@@ -73,10 +74,23 @@ public class RentalController {
                                  examples = @ExampleObject(name = "RentalDetailResponse", 
                                                            value = "{\"id\": 1, \"name\": \"dream house\", \"surface\": 24, \"price\": 30, \"picture\": [\"https://blog.technavio.org/wp-content/uploads/2018/12/Online-House-Rental-Sites.jpg\"], \"description\": \"Lorem ipsum dolor sit amet...\", \"owner_id\": 1, \"created_at\": \"2012/12/02\", \"updated_at\": \"2014/12/02\"}")))
     @ApiResponse(responseCode = "401", description = "Unauthorized",
-    content = @Content(mediaType = "application/json",
+    		content = @Content(mediaType = "application/json",
                        examples = @ExampleObject(name = "Empty response")))
     @GetMapping("/{id}")
     public Optional<RentalDetailDto>  getRentalById(@PathVariable Integer id) {
     	return rentalService.getRentalById(id);
+    }
+    
+    @Operation(summary = "Update a rental", description = "Updates an existing rental and returns a success message")
+    @ApiResponse(responseCode = "200", description = "Rental updated successfully",
+                 content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = MessageResponse.class),
+                                    examples = @ExampleObject(value = "{\"message\": \"Rental updated!\"}")))
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
+    		content = @Content(mediaType = "application/json",
+                       examples = @ExampleObject(name = "Empty response")))
+    @PutMapping("/{id}")
+    public Optional<MessageResponse> updateRental(@PathVariable Integer id, @ModelAttribute @Valid UpdateRentalRequest rentalRequest) {
+    	return rentalService.updateRental(id, rentalRequest);
     }
 }
