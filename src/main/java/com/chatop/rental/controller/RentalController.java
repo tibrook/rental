@@ -2,6 +2,7 @@ package com.chatop.rental.controller;
 
 import com.chatop.rental.dto.requests.RentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
+import com.chatop.rental.dto.responses.RentalDetailDto;
 import com.chatop.rental.dto.responses.RentalDto;
 import com.chatop.rental.dto.responses.RentalListResponse;
 import com.chatop.rental.service.RentalService;
@@ -42,8 +43,17 @@ public class RentalController {
         return rentalService.createRental(rentalRequest, authentication.getName());
     }
     
-    @Operation(summary = "Get all rentals", description = "Returns a list of all rentals")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved all rentals",  content = @Content(mediaType = "application/json"))
+    @Operation(
+    		summary = "Get all rentals", 
+    		description = "Returns a list of all rentals"
+    )
+    @ApiResponse(
+    		responseCode = "200", 
+    		description = "Successfully retrieved all rentals",
+    		content = @Content(mediaType = "application/json",
+    						   schema= @Schema(implementation = RentalListResponse.class),
+    						   examples = @ExampleObject(name="Successful Response",
+    						   value = "{\"rentals\": [{\"id\": 1, \"name\": \"dream house\", \"surface\": 24, \"price\": 30, \"picture\": \"https://blog.technavio.org/wp-content/uploads/2018/12/Online-House-Rental-Sites.jpg\", \"description\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a lectus eleifend, varius massa ac, mollis tortor. Quisque ipsum nulla, faucibus ac metus a, eleifend efficitur augue. Integer vel pulvinar ipsum. Praesent mollis neque sed sagittis ultricies. Suspendisse congue ligula at justo molestie, eget cursus nulla tincidunt. Pellentesque elementum rhoncus arcu, viverra gravida turpis mattis in. Maecenas tempor elementum lorem vel ultricies. Nam tempus laoreet eros, et viverra libero tincidunt a. Nunc vel nisi vulputate, sodales massa eu, varius erat.\", \"owner_id\": 1, \"created_at\": \"2012/12/02\", \"updated_at\": \"2014/12/02\"}]}")))
     @ApiResponse(responseCode = "401", description = "Unauthorized",
 			    content = @Content(mediaType = "application/json",
 			                       examples = @ExampleObject(name = "Empty response")))
@@ -51,5 +61,22 @@ public class RentalController {
     public RentalListResponse getAllRentals() {
         List<RentalDto> rentals = rentalService.getAllRentals();
         return new RentalListResponse(rentals);
+    }
+    @Operation(
+    		summary = "Get rental details by ID", 
+            description = "Returns the detailed information of a specific rental by its ID")
+    @ApiResponse(
+    		responseCode = "200", 
+    		description = "Successfully retrieved rental details", 
+            content = @Content(mediaType = "application/json",
+                               schema = @Schema(implementation = RentalDetailDto.class),
+                                 examples = @ExampleObject(name = "RentalDetailResponse", 
+                                                           value = "{\"id\": 1, \"name\": \"dream house\", \"surface\": 24, \"price\": 30, \"picture\": [\"https://blog.technavio.org/wp-content/uploads/2018/12/Online-House-Rental-Sites.jpg\"], \"description\": \"Lorem ipsum dolor sit amet...\", \"owner_id\": 1, \"created_at\": \"2012/12/02\", \"updated_at\": \"2014/12/02\"}")))
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
+    content = @Content(mediaType = "application/json",
+                       examples = @ExampleObject(name = "Empty response")))
+    @GetMapping("/{id}")
+    public Optional<RentalDetailDto>  getRentalById(@PathVariable Integer id) {
+    	return rentalService.getRentalById(id);
     }
 }

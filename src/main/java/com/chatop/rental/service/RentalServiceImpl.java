@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.chatop.rental.dto.requests.RentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
+import com.chatop.rental.dto.responses.RentalDetailDto;
 import com.chatop.rental.dto.responses.RentalDto;
 import com.chatop.rental.model.Rental;
 import com.chatop.rental.repository.RentalRepository;
@@ -60,4 +61,14 @@ public class RentalServiceImpl implements RentalService {
     private RentalDto convertToDto(Rental rental) {
         return modelMapper.map(rental, RentalDto.class);
     }
+    @Override
+    public Optional<RentalDetailDto> getRentalById(Integer rentalId) {
+        log.info("Fetching rental with ID {}", rentalId);
+        return rentalRepository.findById(rentalId)
+                .map(rental -> {
+                    log.info("Rental found: {}", rental);  
+                    return modelMapper.map(rental, RentalDetailDto.class);
+                });
+    }
+
 }
