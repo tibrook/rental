@@ -1,13 +1,17 @@
 package com.chatop.rental.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chatop.rental.dto.MessageResponse;
+import com.chatop.rental.dto.RentalDto;
 import com.chatop.rental.dto.RentalRequest;
 import com.chatop.rental.model.Rental;
 import com.chatop.rental.repository.RentalRepository;
@@ -21,7 +25,10 @@ public class RentalServiceImpl implements RentalService {
 
     @Autowired
     private UserService userService;
-
+    
+    @Autowired
+    private ModelMapper modelMapper;
+    
     @Autowired
     private StorageService storageService;
 
@@ -40,5 +47,17 @@ public class RentalServiceImpl implements RentalService {
             log.info("Rental successfully created with ID {}", rental.getId());
             return new MessageResponse("Rental created!");
         });
+    }
+    @Override
+    public List<RentalDto> getAllRentals() {
+        log.info("Fetching all rentals");
+        List<Rental> rentals = rentalRepository.findAll();
+        return rentals.stream()
+                      .map(this::convertToDto)
+                      .collect(Collectors.toList());
+    }
+
+    private RentalDto convertToDto(Rental rental) {
+        return modelMapper.map(rental, RentalDto.class);
     }
 }

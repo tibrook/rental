@@ -1,6 +1,8 @@
 package com.chatop.rental.controller;
 
 import com.chatop.rental.dto.MessageResponse;
+import com.chatop.rental.dto.RentalDto;
+import com.chatop.rental.dto.RentalListResponse;
 import com.chatop.rental.dto.RentalRequest;
 import com.chatop.rental.service.RentalService;
 
@@ -8,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +40,16 @@ public class RentalController {
     @PostMapping
     public Optional<MessageResponse> createRental(@ModelAttribute @Valid RentalRequest rentalRequest, Authentication authentication) {
         return rentalService.createRental(rentalRequest, authentication.getName());
+    }
+    
+    @Operation(summary = "Get all rentals", description = "Returns a list of all rentals")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved all rentals",  content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
+			    content = @Content(mediaType = "application/json",
+			                       examples = @ExampleObject(name = "Empty response")))
+    @GetMapping
+    public RentalListResponse getAllRentals() {
+        List<RentalDto> rentals = rentalService.getAllRentals();
+        return new RentalListResponse(rentals);
     }
 }
