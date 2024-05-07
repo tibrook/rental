@@ -42,7 +42,7 @@ public class RentalServiceImpl implements RentalService {
             rental.setSurface(rentalRequest.getSurface());
             rental.setPrice(rentalRequest.getPrice());
             rental.setDescription(rentalRequest.getDescription());
-            rental.setPictureUrl(imageUrl);
+            rental.setPicture(imageUrl);
             rentalRepository.save(rental);
             log.info("Rental successfully created with ID {}", rental.getId());
             return new MessageResponse("Rental created!");

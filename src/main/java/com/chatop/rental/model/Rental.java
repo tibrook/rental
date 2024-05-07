@@ -25,7 +25,7 @@ public class Rental {
     private Double price;
 
     @Column(nullable = false)
-    private String pictureUrl;
+    private String picture;
 
     @Column(nullable = false, length = 2048)
     private String description;

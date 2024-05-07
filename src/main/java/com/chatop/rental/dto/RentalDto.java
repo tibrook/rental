@@ -17,7 +17,7 @@ public class RentalDto {
     private String name;
     private Integer surface;
     private Double price;
-    private String pictureUrl;
+    private String picture;
     private String description;
     
     @JsonProperty("owner_id")
