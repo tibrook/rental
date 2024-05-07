@@ -1,4 +1,4 @@
-package com.chatop.rental.dto;
+package com.chatop.rental.dto.requests;
 
 import org.springframework.web.multipart.MultipartFile;
 

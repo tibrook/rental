@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.chatop.rental.dto.MessageResponse;
-import com.chatop.rental.dto.RentalDto;
-import com.chatop.rental.dto.RentalRequest;
+import com.chatop.rental.dto.requests.RentalRequest;
+import com.chatop.rental.dto.responses.MessageResponse;
+import com.chatop.rental.dto.responses.RentalDto;
 import com.chatop.rental.model.Rental;
 import com.chatop.rental.repository.RentalRepository;
 

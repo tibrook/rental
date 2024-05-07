@@ -2,7 +2,7 @@ package com.chatop.rental.service;
 
 import java.util.Optional;
 
-import com.chatop.rental.dto.UserDto;
+import com.chatop.rental.dto.responses.UserDto;
 import com.chatop.rental.model.User;
 
 public interface UserService {

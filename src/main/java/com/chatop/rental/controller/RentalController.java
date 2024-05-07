@@ -1,9 +1,9 @@
 package com.chatop.rental.controller;
 
-import com.chatop.rental.dto.MessageResponse;
-import com.chatop.rental.dto.RentalDto;
-import com.chatop.rental.dto.RentalListResponse;
-import com.chatop.rental.dto.RentalRequest;
+import com.chatop.rental.dto.requests.RentalRequest;
+import com.chatop.rental.dto.responses.MessageResponse;
+import com.chatop.rental.dto.responses.RentalDto;
+import com.chatop.rental.dto.responses.RentalListResponse;
 import com.chatop.rental.service.RentalService;
 
 import io.swagger.v3.oas.annotations.Operation;

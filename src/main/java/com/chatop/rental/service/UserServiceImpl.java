@@ -1,6 +1,6 @@
 package com.chatop.rental.service;
 
-import com.chatop.rental.dto.UserDto;
+import com.chatop.rental.dto.responses.UserDto;
 import com.chatop.rental.model.User;
 import com.chatop.rental.repository.UserRepository;
 

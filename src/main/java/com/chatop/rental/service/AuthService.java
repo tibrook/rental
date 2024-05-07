@@ -13,9 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.chatop.rental.dto.LoginRequest;
-import com.chatop.rental.dto.RegisterRequest;
-import com.chatop.rental.dto.TokenResponse;
+import com.chatop.rental.dto.requests.LoginRequest;
+import com.chatop.rental.dto.requests.RegisterRequest;
+import com.chatop.rental.dto.responses.TokenResponse;
 import com.chatop.rental.model.User;
 
 @Service

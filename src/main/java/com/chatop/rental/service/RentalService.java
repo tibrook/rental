@@ -3,9 +3,9 @@ package com.chatop.rental.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.chatop.rental.dto.MessageResponse;
-import com.chatop.rental.dto.RentalDto;
-import com.chatop.rental.dto.RentalRequest;
+import com.chatop.rental.dto.requests.RentalRequest;
+import com.chatop.rental.dto.responses.MessageResponse;
+import com.chatop.rental.dto.responses.RentalDto;
 
 public interface RentalService {
 	Optional<MessageResponse> createRental(RentalRequest rentalRequest, String userEmail);
