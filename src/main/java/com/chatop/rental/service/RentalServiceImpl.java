@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.chatop.rental.dto.requests.RentalRequest;
+import com.chatop.rental.dto.RentalDto;
+import com.chatop.rental.dto.requests.CreateRentalRequest;
 import com.chatop.rental.dto.requests.UpdateRentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
-import com.chatop.rental.dto.responses.RentalDetailDto;
-import com.chatop.rental.dto.responses.RentalDto;
+import com.chatop.rental.dto.responses.RentalDetailResponse;
 import com.chatop.rental.model.Rental;
 import com.chatop.rental.repository.RentalRepository;
 
@@ -35,7 +35,7 @@ public class RentalServiceImpl implements RentalService {
     private StorageService storageService;
 
     @Override
-    public Optional<MessageResponse> createRental(RentalRequest rentalRequest, String userEmail) {
+    public Optional<MessageResponse> createRental(CreateRentalRequest rentalRequest, String userEmail) {
         return userService.findByEmail(userEmail).map(user -> {
             String imageUrl = storageService.store(rentalRequest.getPicture());
             Rental rental = new Rental();
@@ -63,12 +63,12 @@ public class RentalServiceImpl implements RentalService {
         return modelMapper.map(rental, RentalDto.class);
     }
     @Override
-    public Optional<RentalDetailDto> getRentalById(Integer rentalId) {
+    public Optional<RentalDetailResponse> getRentalById(Integer rentalId) {
         log.info("Fetching rental with ID {}", rentalId);
         return rentalRepository.findById(rentalId)
                 .map(rental -> {
                     log.info("Rental found: {}", rental);  
-                    return modelMapper.map(rental, RentalDetailDto.class);
+                    return modelMapper.map(rental, RentalDetailResponse.class);
                 });
     }
     @Override

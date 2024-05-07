@@ -10,7 +10,7 @@ import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.chatop.rental.dto.responses.RentalDetailDto;
+import com.chatop.rental.dto.responses.RentalDetailResponse;
 import com.chatop.rental.model.Rental;
 
 @Configuration
@@ -22,9 +22,9 @@ public class ModelMapperConfig {
         // Set strict matching strategy to ensure explicit mapping definitions are respected
 	    modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         // Configure custom mappings for Rental to RentalDetailDto, specifically for the picture field
-	    modelMapper.typeMap(Rental.class, RentalDetailDto.class).addMappings(mapper -> 
+	    modelMapper.typeMap(Rental.class, RentalDetailResponse.class).addMappings(mapper -> 
         	// Use the custom converter to map a single String picture to a List of Strings
-	        mapper.using(toStringListConverter).map(Rental::getPicture, RentalDetailDto::setPicture)
+	        mapper.using(toStringListConverter).map(Rental::getPicture, RentalDetailResponse::setPicture)
 	    );
 
 		    return modelMapper;

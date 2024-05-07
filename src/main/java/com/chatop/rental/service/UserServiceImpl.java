@@ -1,6 +1,6 @@
 package com.chatop.rental.service;
 
-import com.chatop.rental.dto.responses.UserDto;
+import com.chatop.rental.dto.UserDto;
 import com.chatop.rental.model.User;
 import com.chatop.rental.repository.UserRepository;
 
@@ -57,30 +57,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return false;
     }
 
-//    public Optional<UserDto> getUserDetails(String email) {
-//        log.info("Fetching user details for email: {}", email);
-//        return findByEmail(email)
-//                .map(user -> modelMapper.map(user, UserDto.class));
-//    }
     public Optional<UserDto> getUserDetails(String email) {
         log.info("Fetching user details for email: {}", email);
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (!userOpt.isPresent()) {
-            log.warn("No user found for email: {}", email);
-            return Optional.empty();
-        }
-
-        User user = userOpt.get();
-        try {
-            UserDto userDto = modelMapper.map(user, UserDto.class);
-            log.info("User details fetched for email: {}, UserDto: {}", email, userDto);
-            return Optional.of(userDto);
-        } catch (Exception e) {
-            log.error("Error mapping User to UserDto for email: {}", email, e);
-            return Optional.empty();
-        }
+        return findByEmail(email)
+                .map(user -> modelMapper.map(user, UserDto.class));
     }
-
     
     @Override
     public Optional<User> getUserById(Long userId) {

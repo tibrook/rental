@@ -1,4 +1,4 @@
-package com.chatop.rental.dto.responses;
+package com.chatop.rental.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,10 +1,10 @@
 package com.chatop.rental.controller;
 
-import com.chatop.rental.dto.requests.RentalRequest;
+import com.chatop.rental.dto.RentalDto;
+import com.chatop.rental.dto.requests.CreateRentalRequest;
 import com.chatop.rental.dto.requests.UpdateRentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
-import com.chatop.rental.dto.responses.RentalDetailDto;
-import com.chatop.rental.dto.responses.RentalDto;
+import com.chatop.rental.dto.responses.RentalDetailResponse;
 import com.chatop.rental.dto.responses.RentalListResponse;
 import com.chatop.rental.service.RentalService;
 
@@ -40,7 +40,7 @@ public class RentalController {
     content = @Content(mediaType = "application/json",
                        examples = @ExampleObject(name = "Empty response")))    
     @PostMapping
-    public Optional<MessageResponse> createRental(@ModelAttribute @Valid RentalRequest rentalRequest, Authentication authentication) {
+    public Optional<MessageResponse> createRental(@ModelAttribute @Valid CreateRentalRequest rentalRequest, Authentication authentication) {
         return rentalService.createRental(rentalRequest, authentication.getName());
     }
     
@@ -70,14 +70,14 @@ public class RentalController {
     		responseCode = "200", 
     		description = "Successfully retrieved rental details", 
             content = @Content(mediaType = "application/json",
-                               schema = @Schema(implementation = RentalDetailDto.class),
+                               schema = @Schema(implementation = RentalDetailResponse.class),
                                  examples = @ExampleObject(name = "RentalDetailResponse", 
                                                            value = "{\"id\": 1, \"name\": \"dream house\", \"surface\": 24, \"price\": 30, \"picture\": [\"https://blog.technavio.org/wp-content/uploads/2018/12/Online-House-Rental-Sites.jpg\"], \"description\": \"Lorem ipsum dolor sit amet...\", \"owner_id\": 1, \"created_at\": \"2012/12/02\", \"updated_at\": \"2014/12/02\"}")))
     @ApiResponse(responseCode = "401", description = "Unauthorized",
     		content = @Content(mediaType = "application/json",
                        examples = @ExampleObject(name = "Empty response")))
     @GetMapping("/{id}")
-    public Optional<RentalDetailDto>  getRentalById(@PathVariable Integer id) {
+    public Optional<RentalDetailResponse>  getRentalById(@PathVariable Integer id) {
     	return rentalService.getRentalById(id);
     }
     

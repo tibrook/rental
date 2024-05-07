@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class RentalRequest {
+public class CreateRentalRequest {
  	@NotBlank(message = "Name cannot be blank")
     private String name;
 

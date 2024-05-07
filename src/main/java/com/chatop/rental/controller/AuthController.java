@@ -1,10 +1,10 @@
 package com.chatop.rental.controller;
 
+import com.chatop.rental.dto.UserDto;
 import com.chatop.rental.dto.requests.LoginRequest;
 import com.chatop.rental.dto.requests.RegisterRequest;
 import com.chatop.rental.dto.responses.ErrorResponse;
 import com.chatop.rental.dto.responses.TokenResponse;
-import com.chatop.rental.dto.responses.UserDto;
 import com.chatop.rental.service.AuthService;
 import com.chatop.rental.service.JWTService;
 import com.chatop.rental.service.UserService;
