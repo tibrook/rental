@@ -17,11 +17,11 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<Object> createResponseBasedOnPath(String path, HttpStatus status, String message) {
         Map<String, Object> body = new HashMap<>();
-        if (message != null && !message.isEmpty()) {
+        if (message != null && !message.isEmpty() && message != "{}") {
             body.put("message", message);
         }
 
-        return ResponseEntity.status(status).body(body.isEmpty() ? "{}" : body);
+        return ResponseEntity.status(status).body(message == "{}" ? message  : body.isEmpty() ? null : body);
     }
 
     @ExceptionHandler(Exception.class)
@@ -30,13 +30,13 @@ public class GlobalExceptionHandler {
 
         String path = request.getDescription(false);
         if (path.contains("/api/auth/register")) {
-            return createResponseBasedOnPath(path, HttpStatus.BAD_REQUEST, null);
+            return createResponseBasedOnPath(path, HttpStatus.BAD_REQUEST, "{}");
         } else if (path.contains("/api/auth/login")) {
             return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, "error");
         } else if (path.contains("/api/auth/me")) {
-            return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, null);
+            return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, "{}");
         } else {
-            return createResponseBasedOnPath(path, HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+            return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, null);
         }
     } 
 }

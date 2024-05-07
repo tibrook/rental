@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -40,10 +42,12 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date createdAt;
 
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date updatedAt; 

@@ -1,27 +1,28 @@
-package com.chatop.rental.dto;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package com.chatop.rental.dto.responses;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-@NoArgsConstructor  
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 @AllArgsConstructor
-@Getter            
-@Setter        
-public class UserDto {
+@NoArgsConstructor
+public class RentalDetailResponse {
     private Integer id;
-    private String email;
     private String name;
+    private Integer surface;
+    private Integer price;
+    private List<String> picture;
+    private String description;
+    
+    private Integer ownerId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "UTC")
-    @JsonProperty("created_at")
     private Date createdAt;
-    @JsonProperty("updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "UTC")
     private Date updatedAt;
 }

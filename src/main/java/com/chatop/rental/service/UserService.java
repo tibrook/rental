@@ -2,6 +2,7 @@ package com.chatop.rental.service;
 
 import java.util.Optional;
 
+import com.chatop.rental.dto.UserDto;
 import com.chatop.rental.model.User;
 
 public interface UserService {
@@ -9,4 +10,5 @@ public interface UserService {
     boolean authenticateUser(String email, String password);
     Optional<User> getUserById(Long userId);
     Optional<User> findByEmail(String email);
+    Optional<UserDto> getUserDetails(String email);
 }
