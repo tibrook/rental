@@ -21,14 +21,14 @@ import org.springframework.util.AntPathMatcher;
 
 
 import com.chatop.rental.controller.advice.JwtAuthenticationException;
-import com.chatop.rental.service.JWTService;
+import com.chatop.rental.service.interfaces.JwtService;
 import com.chatop.rental.service.interfaces.UserService;
 
 @Component
 @RequiredArgsConstructor
 public class JwtExceptionHandlingFilter extends OncePerRequestFilter {
 
-    private final JWTService jwtService;
+    private final JwtService jwtService;
     private final UserService userService;
     private final HandlerExceptionResolver resolver;
     private static final Logger logger = LoggerFactory.getLogger(JwtExceptionHandlingFilter.class);

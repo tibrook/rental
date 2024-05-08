@@ -17,17 +17,19 @@ import com.chatop.rental.dto.requests.LoginRequest;
 import com.chatop.rental.dto.requests.RegisterRequest;
 import com.chatop.rental.dto.responses.TokenResponse;
 import com.chatop.rental.model.User;
+import com.chatop.rental.service.interfaces.AuthService;
+import com.chatop.rental.service.interfaces.JwtService;
 import com.chatop.rental.service.interfaces.UserService;
 
 @Service
-public class AuthService {
-    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+public class AuthServiceImpl implements AuthService{
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private JWTService jwtService;
+    private JwtService jwtService;
 
     @Autowired
     private AuthenticationManager authenticationManager;

@@ -25,7 +25,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
-import com.chatop.rental.service.JWTService;
+import com.chatop.rental.service.interfaces.JwtService;
 import com.chatop.rental.service.interfaces.UserService;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 
@@ -70,7 +70,7 @@ public class SpringSecurityConfig {
     
     @Bean
     public JwtExceptionHandlingFilter jwtExceptionHandlingFilter(
-        JWTService jwtService, 
+        JwtService jwtService, 
         UserService userService, 
         @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
         return new JwtExceptionHandlingFilter(jwtService, userService, exceptionResolver);

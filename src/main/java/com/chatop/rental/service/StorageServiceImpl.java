@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.chatop.rental.controller.advice.StorageException;
+import com.chatop.rental.service.interfaces.StorageService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
-public class StorageService {
+public class StorageServiceImpl implements StorageService{
 
     private final Path rootLocation = Paths.get("uploads");
 

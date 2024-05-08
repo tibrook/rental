@@ -5,8 +5,8 @@ import com.chatop.rental.dto.requests.LoginRequest;
 import com.chatop.rental.dto.requests.RegisterRequest;
 import com.chatop.rental.dto.responses.ErrorResponse;
 import com.chatop.rental.dto.responses.TokenResponse;
-import com.chatop.rental.service.AuthService;
-import com.chatop.rental.service.JWTService;
+import com.chatop.rental.service.interfaces.AuthService;
+import com.chatop.rental.service.interfaces.JwtService;
 import com.chatop.rental.service.interfaces.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +35,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JWTService jwtService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userService = userService;
     }
     

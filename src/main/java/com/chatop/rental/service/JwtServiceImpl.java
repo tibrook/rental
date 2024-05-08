@@ -15,10 +15,11 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.chatop.rental.controller.advice.JwtAuthenticationException;
+import com.chatop.rental.service.interfaces.JwtService;
 
 
 @Service
-public class JWTService {
+public class JwtServiceImpl implements JwtService{
 
 
 	private JwtEncoder jwtEncoder;
@@ -28,7 +29,7 @@ public class JWTService {
 	@Value("${jwt.expiration}")
 	private long jwtExpiration; 
 	
-	public JWTService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
+	public JwtServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
 		this.jwtEncoder = jwtEncoder;
 		this.jwtDecoder = jwtDecoder;
 	}
