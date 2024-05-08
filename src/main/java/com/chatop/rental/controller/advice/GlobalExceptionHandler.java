@@ -35,6 +35,8 @@ public class GlobalExceptionHandler {
             return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, "error");
         } else if (path.contains("/api/auth/me")) {
             return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, "{}");
+        } else if (path.contains("/api/messages")) {
+            return createResponseBasedOnPath(path, HttpStatus.BAD_REQUEST, "{}");
         } else {
             return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, null);
         }
