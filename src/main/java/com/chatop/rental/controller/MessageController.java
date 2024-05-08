@@ -2,7 +2,8 @@ package com.chatop.rental.controller;
 
 import com.chatop.rental.dto.requests.MessageRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
-import com.chatop.rental.service.MessageService;
+import com.chatop.rental.service.interfaces.MessageService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;

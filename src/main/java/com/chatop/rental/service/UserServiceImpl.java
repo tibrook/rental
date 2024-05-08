@@ -3,6 +3,7 @@ package com.chatop.rental.service;
 import com.chatop.rental.dto.UserDto;
 import com.chatop.rental.model.User;
 import com.chatop.rental.repository.UserRepository;
+import com.chatop.rental.service.interfaces.UserService;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;

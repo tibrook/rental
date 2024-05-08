@@ -4,6 +4,8 @@ import com.chatop.rental.dto.requests.MessageRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.model.Message;
 import com.chatop.rental.repository.MessageRepository;
+import com.chatop.rental.service.interfaces.MessageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

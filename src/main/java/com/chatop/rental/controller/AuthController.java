@@ -7,7 +7,7 @@ import com.chatop.rental.dto.responses.ErrorResponse;
 import com.chatop.rental.dto.responses.TokenResponse;
 import com.chatop.rental.service.AuthService;
 import com.chatop.rental.service.JWTService;
-import com.chatop.rental.service.UserService;
+import com.chatop.rental.service.interfaces.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

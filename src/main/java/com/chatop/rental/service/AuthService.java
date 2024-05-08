@@ -17,6 +17,7 @@ import com.chatop.rental.dto.requests.LoginRequest;
 import com.chatop.rental.dto.requests.RegisterRequest;
 import com.chatop.rental.dto.responses.TokenResponse;
 import com.chatop.rental.model.User;
+import com.chatop.rental.service.interfaces.UserService;
 
 @Service
 public class AuthService {

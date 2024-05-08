@@ -6,7 +6,7 @@ import com.chatop.rental.dto.requests.UpdateRentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.dto.responses.RentalDetailResponse;
 import com.chatop.rental.dto.responses.RentalListResponse;
-import com.chatop.rental.service.RentalService;
+import com.chatop.rental.service.interfaces.RentalService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

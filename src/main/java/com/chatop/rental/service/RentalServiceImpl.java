@@ -17,6 +17,8 @@ import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.dto.responses.RentalDetailResponse;
 import com.chatop.rental.model.Rental;
 import com.chatop.rental.repository.RentalRepository;
+import com.chatop.rental.service.interfaces.RentalService;
+import com.chatop.rental.service.interfaces.UserService;
 
 @Service
 public class RentalServiceImpl implements RentalService {
