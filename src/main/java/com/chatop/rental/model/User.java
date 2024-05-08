@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "users")
@@ -47,7 +48,7 @@ public class User {
     @Column(nullable = false)
     private Date createdAt;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date updatedAt; 
