@@ -8,7 +8,7 @@ import com.chatop.rental.model.User;
 public interface UserService {
   	Optional<User> registerUser(String email, String name, String password);
     boolean authenticateUser(String email, String password);
-    Optional<User> getUserById(Long userId);
+    Optional<UserDto> getUserById(Long userId);
     Optional<User> findByEmail(String email);
     Optional<UserDto> getUserDetails(String email);
 }
