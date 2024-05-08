@@ -38,7 +38,8 @@ public class JwtExceptionHandlingFilter extends OncePerRequestFilter {
             "/api/auth/login",
             "/api-docs/**",
             "/swagger-ui.html",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/uploads/**"
         );
 
     @Override

@@ -36,7 +36,8 @@ public class RentalServiceImpl implements RentalService {
     
     @Autowired
     private StorageService storageService;
-
+    
+   
     @Override
     public Optional<MessageResponse> createRental(CreateRentalRequest rentalRequest, String userEmail) {
         return userService.findByEmail(userEmail).map(user -> {
@@ -63,7 +64,9 @@ public class RentalServiceImpl implements RentalService {
     }
 
     private RentalDto convertToDto(Rental rental) {
-        return modelMapper.map(rental, RentalDto.class);
+        RentalDto dto = modelMapper.map(rental, RentalDto.class);
+        dto.setPicture(storageService.getFullImagePath(rental.getPicture()));
+        return dto;
     }
     @Override
     public Optional<RentalDetailResponse> getRentalById(Integer rentalId) {

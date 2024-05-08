@@ -1,5 +1,6 @@
 package com.chatop.rental.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,12 @@ import java.util.UUID;
 public class StorageServiceImpl implements StorageService{
 
     private final Path rootLocation = Paths.get("uploads");
+    @Value("${server.base-url}")
+    private String baseUrl;
 
+    public String getFullImagePath(String filename) {
+        return baseUrl + filename;
+    }
     public String store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
