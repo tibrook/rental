@@ -1,5 +1,6 @@
 package com.chatop.rental.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,9 +73,12 @@ public class RentalServiceImpl implements RentalService {
     public Optional<RentalDetailResponse> getRentalById(Integer rentalId) {
         log.info("Fetching rental with ID {}", rentalId);
         return rentalRepository.findById(rentalId)
-                .map(rental -> {
-                    log.info("Rental found: {}", rental);  
-                    return modelMapper.map(rental, RentalDetailResponse.class);
+        		.map(rental -> {
+                    log.info("Rental found: {}", rental);
+                    RentalDetailResponse response = modelMapper.map(rental, RentalDetailResponse.class);
+                    List<String> pictures = Collections.singletonList(storageService.getFullImagePath(rental.getPicture()));
+                    response.setPicture(pictures);                    
+                    return response;
                 });
     }
     @Override
