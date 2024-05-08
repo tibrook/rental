@@ -3,6 +3,7 @@ package com.chatop.rental.configuration;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,21 +19,27 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
+import com.chatop.rental.service.JWTService;
+import com.chatop.rental.service.interfaces.UserService;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+
 
 @EnableWebSecurity
 @Configuration
 public class SpringSecurityConfig {
-	
+
 	@Value("${JWT_SECRET}")
 	private String jwtSecret;
 	
     @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
-    
+       
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
@@ -47,7 +54,7 @@ public class SpringSecurityConfig {
      * @throws Exception when there is a configuration error.
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,JwtExceptionHandlingFilter jwtExceptionHandlingFilter) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -55,23 +62,19 @@ public class SpringSecurityConfig {
                 .requestMatchers("/api/auth/register", "/api/auth/login","/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-          return http.build();
+          
+        http.addFilterBefore(jwtExceptionHandlingFilter, BearerTokenAuthenticationFilter.class);
+
+        return http.build();
     }
-
-    /**
-     * Provides a custom AuthenticationEntryPoint that is used when authentication fails.
-     * This method customizes the response to use JSON format and return a 401 status code.
-     * @return an instance of AuthenticationEntryPoint that handles authentication failures.
-     */
-//    @Bean
-//    public AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
-//        return (request, response, authException) -> {
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            response.setContentType("application/json");
-//            response.getWriter().write("{}");
-//        };
-//    }
-
+    
+    @Bean
+    public JwtExceptionHandlingFilter jwtExceptionHandlingFilter(
+        JWTService jwtService, 
+        UserService userService, 
+        @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
+        return new JwtExceptionHandlingFilter(jwtService, userService, exceptionResolver);
+    }
     /**
      * Exposes the default AuthenticationManager as a Bean.
      * AuthenticationManager is the main strategy interface for Authentication management in Spring Security.
