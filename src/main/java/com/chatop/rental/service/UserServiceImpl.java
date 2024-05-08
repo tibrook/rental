@@ -48,13 +48,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean authenticateUser(String email, String password) {
         log.info("Authenticating user with email: {}", email);
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            log.info("Authentication successful for email: {}", email);
-            return true;
-        }
-        log.info("Authentication failed for email: {}", email);
-        return false;
+        return userRepository.findByEmail(email)
+                             .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+                             .isPresent();
     }
 
     public Optional<UserDto> getUserDetails(String email) {
@@ -64,9 +60,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
     
     @Override
-    public Optional<User> getUserById(Long userId) {
+    public Optional<UserDto> getUserById(Long userId) {
         log.info("Fetching user by ID: {}", userId);
-        return userRepository.findById(userId);
+        return userRepository.findById(userId)
+        		.map(user -> modelMapper.map(user, UserDto.class));
     }
 
     @Override
@@ -77,11 +74,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Loading user by username: {}", username);
-        Optional<User> user = userRepository.findByEmail(username);
-        if (!user.isPresent()) {
-            throw new UsernameNotFoundException("User not found with email: " + username);
-        }
-        return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Collections.emptyList());
+        return userRepository.findByEmail(username)
+                             .map(user -> new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), Collections.emptyList()))
+                             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
     }
 }
