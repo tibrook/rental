@@ -4,14 +4,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
+/**
+ * Validator for validating image files.
+ */
 public class ImageFileValidator implements ConstraintValidator<ValidImage, MultipartFile> {
 	private static final int MAX_FILENAME_LENGTH = 255;
 	
     @Override
     public void initialize(ValidImage constraintAnnotation) {
     }
-
+    /**
+     * Validates if the provided file is a valid image file.
+     * @param file MultipartFile to be validated.
+     * @param context ConstraintValidatorContext providing contextual data and operation when applying the constraint.
+     * @return true if the file is a valid image, false otherwise.
+     */
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         String filename = file.getOriginalFilename();

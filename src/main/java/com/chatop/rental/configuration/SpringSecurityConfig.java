@@ -40,6 +40,10 @@ public class SpringSecurityConfig {
     @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
        
+    /**
+     * Provides a PropertySourcesPlaceholderConfigurer bean.
+     * @return PropertySourcesPlaceholderConfigurer bean for resolving placeholders in Spring bean definitions.
+     */
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
