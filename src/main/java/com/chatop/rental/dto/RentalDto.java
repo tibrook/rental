@@ -1,5 +1,6 @@
 package com.chatop.rental.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.chatop.rental.serialization.CustomDoubleSerializer;
@@ -18,9 +19,9 @@ public class RentalDto {
     private Integer id;
     private String name;
     @JsonSerialize(using = CustomDoubleSerializer.class)
-    private Double surface;
+    private BigDecimal surface;
     @JsonSerialize(using = CustomDoubleSerializer.class)
-    private Double price;    
+    private BigDecimal price;    
     private String picture;
     private String description;
     
