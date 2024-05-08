@@ -64,7 +64,7 @@ public class AuthController {
                            examples = @ExampleObject(name = "Unauthorized", value = "{\"message\": \"error\"}")))
     @PostMapping("/login")
     public TokenResponse loginUser(@RequestBody LoginRequest loginRequest) {
-        log.info("Logging in {}", loginRequest.getLogin());
+        log.info("Logging in {}", loginRequest.getEmail());
         return authService.authenticateAndGenerateToken(loginRequest);
     }
     
