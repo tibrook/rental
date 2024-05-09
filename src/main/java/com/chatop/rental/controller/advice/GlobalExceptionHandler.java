@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -21,7 +23,7 @@ public class GlobalExceptionHandler {
             body.put("message", message);
         }
 
-        return ResponseEntity.status(status).body(message == "{}" ? message  : body.isEmpty() ? null : body);
+        return ResponseEntity.status(status).body(message == "{}" ? new HashMap<>()  : body.isEmpty() ? null : body);
     }
 
     @ExceptionHandler(Exception.class)
@@ -41,4 +43,14 @@ public class GlobalExceptionHandler {
             return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, null);
         }
     } 
+  
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<Object> handleJwtAuthenticationException(JwtAuthenticationException ex, HttpServletRequest request, WebRequest pathRequest) {
+        String path = pathRequest.getDescription(false);
+        if (path.contains("/api/auth/me")) {
+        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashMap<>());
+        }else {
+        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("");
+        }
+    }
 }

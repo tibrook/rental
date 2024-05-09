@@ -1,4 +1,4 @@
-package com.chatop.rental.service;
+package com.chatop.rental.service.interfaces;
 
 import java.util.List;
 import java.util.Optional;

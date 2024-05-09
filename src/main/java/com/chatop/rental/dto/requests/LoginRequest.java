@@ -10,14 +10,14 @@ public class LoginRequest {
 		
 	@Email
     @NotEmpty
-    private final String login;
+    private final String email;
     
     @NotEmpty
     @Size(min = 8)
     private final String password;
     
-    public LoginRequest(String login, String password) {
-        this.login = login;
+    public LoginRequest(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 }

@@ -1,5 +1,6 @@
 package com.chatop.rental.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +18,13 @@ import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.dto.responses.RentalDetailResponse;
 import com.chatop.rental.model.Rental;
 import com.chatop.rental.repository.RentalRepository;
+import com.chatop.rental.service.interfaces.RentalService;
+import com.chatop.rental.service.interfaces.StorageService;
+import com.chatop.rental.service.interfaces.UserService;
 
+/**
+ * Implementation of RentalService interface providing rental management functionalities.
+ */
 @Service
 public class RentalServiceImpl implements RentalService {
     private static final Logger log = LoggerFactory.getLogger(RentalServiceImpl.class);
@@ -33,7 +40,13 @@ public class RentalServiceImpl implements RentalService {
     
     @Autowired
     private StorageService storageService;
-
+    
+    /**
+     * Creates a new rental listing.
+     * @param rentalRequest CreateRentalRequest object containing rental details.
+     * @param userEmail Email of the user creating the rental listing.
+     * @return Optional MessageResponse indicating the success of the rental creation.
+     */
     @Override
     public Optional<MessageResponse> createRental(CreateRentalRequest rentalRequest, String userEmail) {
         return userService.findByEmail(userEmail).map(user -> {
@@ -50,6 +63,10 @@ public class RentalServiceImpl implements RentalService {
             return new MessageResponse("Rental created!");
         });
     }
+    /**
+     * Retrieves all rentals.
+     * @return List of RentalDto objects representing all rentals.
+     */
     @Override
     public List<RentalDto> getAllRentals() {
         log.info("Fetching all rentals");
@@ -58,19 +75,39 @@ public class RentalServiceImpl implements RentalService {
                       .map(this::convertToDto)
                       .collect(Collectors.toList());
     }
-
+    /**
+     * Converts a Rental entity to its DTO representation.
+     * @param rental Rental entity to be converted.
+     * @return RentalDto representing the rental.
+     */
     private RentalDto convertToDto(Rental rental) {
-        return modelMapper.map(rental, RentalDto.class);
+        RentalDto dto = modelMapper.map(rental, RentalDto.class);
+        dto.setPicture(storageService.getFullImagePath(rental.getPicture()));
+        return dto;
     }
+    /**
+     * Retrieves a rental by its ID.
+     * @param rentalId ID of the rental to retrieve.
+     * @return Optional RentalDetailResponse representing the rental details.
+     */
     @Override
     public Optional<RentalDetailResponse> getRentalById(Integer rentalId) {
         log.info("Fetching rental with ID {}", rentalId);
         return rentalRepository.findById(rentalId)
-                .map(rental -> {
-                    log.info("Rental found: {}", rental);  
-                    return modelMapper.map(rental, RentalDetailResponse.class);
+        		.map(rental -> {
+                    log.info("Rental found: {}", rental);
+                    RentalDetailResponse response = modelMapper.map(rental, RentalDetailResponse.class);
+                    List<String> pictures = Collections.singletonList(storageService.getFullImagePath(rental.getPicture()));
+                    response.setPicture(pictures);                    
+                    return response;
                 });
     }
+    /**
+     * Updates a rental.
+     * @param rentalId ID of the rental to update.
+     * @param rentalRequest UpdateRentalRequest containing the updated rental details.
+     * @return Optional MessageResponse indicating the success of the rental update.
+     */
     @Override
     public Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest) {
         return rentalRepository.findById(rentalId).map(rental -> {

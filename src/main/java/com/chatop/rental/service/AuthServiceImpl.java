@@ -17,30 +17,46 @@ import com.chatop.rental.dto.requests.LoginRequest;
 import com.chatop.rental.dto.requests.RegisterRequest;
 import com.chatop.rental.dto.responses.TokenResponse;
 import com.chatop.rental.model.User;
+import com.chatop.rental.service.interfaces.AuthService;
+import com.chatop.rental.service.interfaces.JwtService;
+import com.chatop.rental.service.interfaces.UserService;
 
+/**
+ * Implementation of AuthService interface providing authentication and registration functionalities.
+ */
 @Service
-public class AuthService {
-    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+public class AuthServiceImpl implements AuthService{
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private JWTService jwtService;
+    private JwtService jwtService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * Authenticates the user and generates a JWT token.
+     * @param loginRequest LoginRequest object containing user's email and password.
+     * @return TokenResponse containing the generated JWT token.
+     */
     public TokenResponse authenticateAndGenerateToken(LoginRequest loginRequest) {
-        log.info("Authenticating user {}", loginRequest.getLogin());
+        log.info("Authenticating user {}", loginRequest.getEmail());
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword())
+            new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.info("User {} authenticated successfully", loginRequest.getLogin());
+        log.info("User {} authenticated successfully", loginRequest.getEmail());
         return new TokenResponse(jwtService.generateToken(authentication));
     }
-
+    /**
+     * Registers a new user and generates a JWT token.
+     * @param registerRequest RegisterRequest object containing user's email, name, and password.
+     * @return TokenResponse containing the generated JWT token.
+     * @throws ResponseStatusException if user registration fails due to duplicate email.
+     */
     public TokenResponse registerAndGenerateToken(RegisterRequest registerRequest) {
         log.info("Registering user {}", registerRequest.getEmail());
         User newUser = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword())
