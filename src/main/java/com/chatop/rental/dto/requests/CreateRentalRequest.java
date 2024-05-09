@@ -1,5 +1,7 @@
 package com.chatop.rental.dto.requests;
 
+import java.math.BigDecimal;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.chatop.rental.validations.ValidImage;
@@ -20,14 +22,14 @@ public class CreateRentalRequest {
     @NotNull(message = "Surface cannot be null")
     @DecimalMin(value = "1.0", message = "Surface must be at least 1.0 square meter")
     @Digits(integer = 8, fraction = 2, message = "Surface must not exceed 8 digits in total with up to 2 decimal places")
-    private Double surface;
+    private BigDecimal surface;
 
     @NotNull(message = "Price cannot be null")
     @Digits(integer = 8, fraction = 2, message = "Price must not exceed 8 digits in total with up to 2 decimal places")
-    private Double price;
+    private BigDecimal price;
 
     @NotBlank(message = "Description cannot be blank")
-    @Size(max = 2048, message = "Description cannot exceed 2048 characters")
+    @Size(max = 2000, message = "Description cannot exceed 2048 characters")
     private String description;
 
     @NotNull(message = "Picture cannot be null")

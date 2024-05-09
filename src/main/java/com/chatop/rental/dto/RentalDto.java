@@ -1,8 +1,9 @@
 package com.chatop.rental.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-import com.chatop.rental.serialization.CustomDoubleSerializer;
+import com.chatop.rental.serialization.CustomBigDecimalSerializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,10 +18,10 @@ import lombok.NoArgsConstructor;
 public class RentalDto {
     private Integer id;
     private String name;
-    @JsonSerialize(using = CustomDoubleSerializer.class)
-    private Double surface;
-    @JsonSerialize(using = CustomDoubleSerializer.class)
-    private Double price;    
+    @JsonSerialize(using = CustomBigDecimalSerializer.class)
+    private BigDecimal surface;
+    @JsonSerialize(using = CustomBigDecimalSerializer.class)
+    private BigDecimal price;    
     private String picture;
     private String description;
     

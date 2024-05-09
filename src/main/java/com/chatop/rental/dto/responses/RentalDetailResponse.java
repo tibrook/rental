@@ -1,5 +1,6 @@
 package com.chatop.rental.dto.responses;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -16,8 +17,8 @@ import lombok.NoArgsConstructor;
 public class RentalDetailResponse {
     private Integer id;
     private String name;
-    private Integer surface;
-    private Integer price;
+    private BigDecimal surface;
+    private BigDecimal price;
     private List<String> picture;
     private String description;
     @JsonProperty("owner_id")

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -102,13 +103,23 @@ public class JwtExceptionHandlingFilter extends OncePerRequestFilter {
      * @param request The current HTTP request.
      */
     private void setupSecurityContext(String jwt, HttpServletRequest request) {
-        String username = jwtService.getUsernameFromToken(jwt);
-        if (StringUtils.hasText(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-        }
+	  try {
+	        String username = jwtService.getUsernameFromToken(jwt);
+	        if (StringUtils.hasText(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+	            UserDetails userDetails;
+	            try {
+	                userDetails = userService.loadUserByUsername(username);
+	            } catch (UsernameNotFoundException e) {
+	                throw new JwtAuthenticationException("User does not exist.");
+	            }
+
+	            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+	                userDetails, null, userDetails.getAuthorities());
+	            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+	            SecurityContextHolder.getContext().setAuthentication(authToken);
+	        }
+	    } catch (JwtAuthenticationException e) {
+	        throw e;  // Re-throw the exception to be caught in doFilterInternal
+	    }
     }
 }

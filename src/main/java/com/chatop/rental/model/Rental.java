@@ -2,7 +2,9 @@ package com.chatop.rental.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.Date;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,10 +22,10 @@ public class Rental {
     private String name;
     
     @Column(nullable = false)
-    private Double surface;
+    private BigDecimal surface;
     
     @Column(nullable = false)
-    private Double price;
+    private BigDecimal price;
 
     @Column(nullable = false)
     private String picture;
@@ -37,10 +39,10 @@ public class Rental {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date updatedAt;
+    private Timestamp updatedAt;
 }

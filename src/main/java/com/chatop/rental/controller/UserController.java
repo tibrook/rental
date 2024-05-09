@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +30,7 @@ public class UserController {
                            examples = @ExampleObject(name = "Empty response"))) 
     })
     @GetMapping("/{id}")
-    public Optional<UserDto> getUserById(@PathVariable Long id) {
+    public UserDto getUserById(@PathVariable Long id) {
     	return userService.getUserById(id);
     }
 

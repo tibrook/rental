@@ -79,13 +79,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     /**
      * Retrieves details of a user by ID.
      * @param userId ID of the user.
-     * @return Optional containing the user details if found, empty otherwise.
+     * @return Optional containing the user details if found, throw exception otherwise.
      */
     @Override
-    public Optional<UserDto> getUserById(Long userId) {
+    public UserDto getUserById(Long userId) {
         log.info("Fetching user by ID: {}", userId);
         return userRepository.findById(userId)
-        		.map(user -> modelMapper.map(user, UserDto.class));
+            .map(user -> modelMapper.map(user, UserDto.class))
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
     }
 
     /**
