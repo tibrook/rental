@@ -8,8 +8,8 @@ import org.springframework.web.context.request.WebRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,13 +17,14 @@ import org.slf4j.LoggerFactory;
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    private ResponseEntity<Object> createResponseBasedOnPath(String path, HttpStatus status, String message) {
-        Map<String, Object> body = new HashMap<>();
-        if (message != null && !message.isEmpty() && message != "{}") {
-            body.put("message", message);
+    private ResponseEntity<Object> createResponse(String message, HttpStatus status) {
+        if ("{}".equals(message)) {
+            return ResponseEntity.status(status).body(new HashMap<>());
+        } else if (message == null || message.isEmpty()) {
+            return ResponseEntity.status(status).build();
+        } else {
+            return ResponseEntity.status(status).body(Collections.singletonMap("message", message));
         }
-
-        return ResponseEntity.status(status).body(message == "{}" ? new HashMap<>()  : body.isEmpty() ? null : body);
     }
 
     @ExceptionHandler(Exception.class)
@@ -31,26 +32,32 @@ public class GlobalExceptionHandler {
         logger.error("Exception handled: {}", request.getDescription(false), ex);
 
         String path = request.getDescription(false);
-        if (path.contains("/api/auth/register")) {
-            return createResponseBasedOnPath(path, HttpStatus.BAD_REQUEST, "{}");
+        HttpStatus status;
+        String message;
+
+        if (path.contains("/api/auth/register") || path.contains("/api/messages")) {
+            status = HttpStatus.BAD_REQUEST;
+            message = "{}";
         } else if (path.contains("/api/auth/login")) {
-            return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, "error");
+            status = HttpStatus.UNAUTHORIZED;
+            message = "error";
         } else if (path.contains("/api/auth/me")) {
-            return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, "{}");
-        } else if (path.contains("/api/messages")) {
-            return createResponseBasedOnPath(path, HttpStatus.BAD_REQUEST, "{}");
+            status = HttpStatus.UNAUTHORIZED;
+            message = "{}";
         } else {
-            return createResponseBasedOnPath(path, HttpStatus.UNAUTHORIZED, null);
+            status = HttpStatus.UNAUTHORIZED;
+            message = null;
         }
-    } 
-  
+
+        return createResponse(message, status);
+    }
+
     @ExceptionHandler(JwtAuthenticationException.class)
     public ResponseEntity<Object> handleJwtAuthenticationException(JwtAuthenticationException ex, HttpServletRequest request, WebRequest pathRequest) {
         String path = pathRequest.getDescription(false);
-        if (path.contains("/api/auth/me")) {
-        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashMap<>());
-        }else {
-        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("");
-        }
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String message = path.contains("/api/auth/me") ? new HashMap<>().toString() : "";
+
+        return createResponse(message, status);
     }
 }
