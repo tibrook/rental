@@ -95,6 +95,12 @@ public class RentalServiceImpl implements RentalService {
      */
     @Override
     public Optional<RentalDetailResponse> getRentalById(Integer rentalId) {
+    	Optional<Rental> rentalOptional = rentalRepository.findById(rentalId);
+        if (!rentalOptional.isPresent()) {
+            // If no rental is found with the provided ID, return an appropriate response
+            log.info("No rental found with ID: {}", rentalId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rental not found");
+        }	
         log.info("Fetching rental with ID {}", rentalId);
         return rentalRepository.findById(rentalId)
         		.map(rental -> {
@@ -115,6 +121,12 @@ public class RentalServiceImpl implements RentalService {
      */
     @Override
     public Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest, Authentication authentication) {
+        Optional<Rental> rentalOptional = rentalRepository.findById(rentalId);
+        if (!rentalOptional.isPresent()) {
+            // If no rental is found with the provided ID, return an appropriate response
+            log.info("No rental found with ID: {}", rentalId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rental not found");
+        }
         return rentalRepository.findById(rentalId).map(rental -> {
             // Check if the authenticated user is the owner of the rental
         	Integer userId = userService.findByEmail(authentication.getName())
