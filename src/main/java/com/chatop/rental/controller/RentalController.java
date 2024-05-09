@@ -90,7 +90,7 @@ public class RentalController {
     		content = @Content(mediaType = "application/json",
                        examples = @ExampleObject(name = "Empty response")))
     @PutMapping("/{id}")
-    public Optional<MessageResponse> updateRental(@PathVariable Integer id, @ModelAttribute @Valid UpdateRentalRequest rentalRequest) {
-    	return rentalService.updateRental(id, rentalRequest);
+    public Optional<MessageResponse> updateRental(@PathVariable Integer id, @ModelAttribute @Valid UpdateRentalRequest rentalRequest, Authentication authentication) {
+    	return rentalService.updateRental(id, rentalRequest, authentication);
     }
 }

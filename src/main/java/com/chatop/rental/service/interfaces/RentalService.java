@@ -3,6 +3,8 @@ package com.chatop.rental.service.interfaces;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
+
 import com.chatop.rental.dto.RentalDto;
 import com.chatop.rental.dto.requests.CreateRentalRequest;
 import com.chatop.rental.dto.requests.UpdateRentalRequest;
@@ -13,5 +15,5 @@ public interface RentalService {
 	Optional<MessageResponse> createRental(CreateRentalRequest rentalRequest, String userEmail);
 	List<RentalDto> getAllRentals();
     Optional<RentalDetailResponse> getRentalById(Integer rentalId);
-    Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest);
+    Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest, Authentication authentication);
 }

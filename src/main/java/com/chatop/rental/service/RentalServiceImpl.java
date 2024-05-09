@@ -9,7 +9,10 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.chatop.rental.dto.RentalDto;
 import com.chatop.rental.dto.requests.CreateRentalRequest;
@@ -103,14 +106,24 @@ public class RentalServiceImpl implements RentalService {
                 });
     }
     /**
-     * Updates a rental.
+    /**
+     * Updates a rental only if the authenticated user is the owner of the rental.
      * @param rentalId ID of the rental to update.
      * @param rentalRequest UpdateRentalRequest containing the updated rental details.
-     * @return Optional MessageResponse indicating the success of the rental update.
+     * @param authentication Authentication object representing the currently authenticated user.
+     * @return Optional<MessageResponse> indicating the success of the operation or empty if unauthorized.
      */
     @Override
-    public Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest) {
+    public Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest, Authentication authentication) {
         return rentalRepository.findById(rentalId).map(rental -> {
+            // Check if the authenticated user is the owner of the rental
+        	Integer userId = userService.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))
+                    .getId();
+            if (!rental.getOwnerId().equals(userId)) {
+                log.info("Update rental not authorized. Bad owner: {}", rental.getOwnerId(), authentication.getName());
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to modify this rental");
+            }
             rental.setName(rentalRequest.getName());
             rental.setSurface(rentalRequest.getSurface());
             rental.setPrice(rentalRequest.getPrice());
