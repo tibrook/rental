@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.chatop.rental.controller.advice.StorageException;
+import com.chatop.rental.exception.StorageException;
 import com.chatop.rental.service.interfaces.StorageService;
 
 import java.io.IOException;
@@ -20,6 +20,7 @@ import java.util.UUID;
 public class StorageServiceImpl implements StorageService{
 
     private final Path rootLocation = Paths.get("uploads");
+    
     @Value("${server.base-url}")
     private String baseUrl;
     /**

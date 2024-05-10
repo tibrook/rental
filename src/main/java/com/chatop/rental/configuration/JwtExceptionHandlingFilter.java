@@ -20,8 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.util.AntPathMatcher;
 
-
-import com.chatop.rental.controller.advice.JwtAuthenticationException;
+import com.chatop.rental.exception.JwtAuthenticationException;
 import com.chatop.rental.service.interfaces.JwtService;
 import com.chatop.rental.service.interfaces.UserService;
 

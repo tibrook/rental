@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 public class LoginRequest {
 		
-	@Email
-    @NotEmpty
+	@Email(message = "Email should be in email format.")
+	@NotEmpty(message = "Email cannot be empty.")
     private final String email;
     
-    @NotEmpty
-    @Size(min = 8)
+	@NotEmpty(message = "Password cannot be empty.")
+	@Size(min = 8, message = "Password must be at least 8 characters long.")
     private final String password;
     
     public LoginRequest(String email, String password) {

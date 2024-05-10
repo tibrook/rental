@@ -1,6 +1,7 @@
 package com.chatop.rental.controller;
 
 import com.chatop.rental.dto.UserDto;
+import com.chatop.rental.exception.UnAuthorizedException;
 import com.chatop.rental.service.interfaces.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,12 +11,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -30,8 +36,15 @@ public class UserController {
                            examples = @ExampleObject(name = "Empty response"))) 
     })
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) {
-    	return userService.getUserById(id);
+    public Optional<UserDto> getUserById(@PathVariable Long id) {
+        Optional<UserDto> user = userService.getUserById(id);
+        // Handle the case of user not found here because userService.getUserById is also used by messageService
+        // And BadRequestException is needed in messageService
+        if(user.isEmpty()) {
+            log.error("No user found with ID: {}", id);
+        	throw new UnAuthorizedException();
+        }
+    	return user;
     }
 
 }

@@ -32,6 +32,8 @@ USE rentaldb;
 -- Copy / paste the content of script.sql in src/main/resources
 ```
 
+Create a new user and grant all privileges on the created database
+
 ### 3. Configure the application
 
 Copy the sample environment configuration file and modify it to match your local setup:

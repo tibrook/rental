@@ -1,4 +1,4 @@
-package com.chatop.rental.controller.advice;
+package com.chatop.rental.exception;
 
 public class StorageException extends RuntimeException {
     private static final long serialVersionUID = 1L;
