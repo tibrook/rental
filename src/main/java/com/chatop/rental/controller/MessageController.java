@@ -37,9 +37,9 @@ public class MessageController {
     @ApiResponse(responseCode = "401", description = "Unauthorized",
 	content = @Content(mediaType = "application/json",
                examples = @ExampleObject(name = "Empty response")))
-    @ApiResponse(responseCode = "400", description = "Bad Request (validation failed)",
+    @ApiResponse(responseCode = "400", description = "Bad Request",
     content = @Content(mediaType = "application/json",
-                       examples = @ExampleObject(name = "Empty object", value = "{}"))) 
+                       examples = @ExampleObject(name = "Validation Failed", value = "{}"))) 
     @PostMapping
     public MessageResponse sendMessage(@RequestBody @Valid MessageRequest messageRequest, BindingResult bindingResult) {
     	 log.info("Send Message {}", messageRequest.getMessage());

@@ -33,7 +33,7 @@ public class UserController {
                                         schema = @Schema(implementation = UserDto.class))),
     @ApiResponse(responseCode = "401", description = "Unauthorized",
     	content = @Content(mediaType = "application/json",
-                           examples = @ExampleObject(name = "Empty response"))) 
+                           examples = @ExampleObject(name = "Bad or missing token"))) 
     })
     @GetMapping("/{id}")
     public Optional<UserDto> getUserById(@PathVariable Long id) {

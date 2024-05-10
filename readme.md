@@ -68,6 +68,7 @@ mvn spring-boot:run
 ```
 
 ## Usage
+
 Once the application is running, you can access endpoints defined in the Swagger UI at:
 
 ```
@@ -77,7 +78,8 @@ http://localhost:8082/swagger-ui.html
 
 This will provide you with an interactive API documentation where you can test out different endpoints.
 
-## Usage
+## Additional Notes
+
 Testing: To run the unit tests included with the application, use mvn test.
 Security Configurations: If you have specific security requirements, consider updating src/main/resources/application-security.properties.
 Database Backups: Regularly backup your database using MySQL dump tools or similar.

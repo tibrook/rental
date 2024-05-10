@@ -46,7 +46,7 @@ public class AuthController {
                            schema = @Schema(implementation = TokenResponse.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request",
     content = @Content(mediaType = "application/json",
-                       examples = @ExampleObject(name = "Empty object", value = "{}")))    
+                       examples = @ExampleObject(name = "Validation Failed", value = "{}")))    
     @PostMapping("/register")
     public TokenResponse registerUser(@RequestBody @Valid RegisterRequest registerRequest, BindingResult bindingResult) {
         log.info("Registering {}", registerRequest.getEmail());
@@ -66,10 +66,10 @@ public class AuthController {
         content = @Content(mediaType = "application/json",
                            schema = @Schema(implementation = TokenResponse.class),
                            examples = @ExampleObject(name = "Successful Response", value = "{\"token\": \"jwt\"}")))
-    @ApiResponse(responseCode = "401", description = "Unauthorized - invalid credentials",
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
         content = @Content(mediaType = "application/json",
                            schema = @Schema(implementation = ErrorResponse.class),
-                           examples = @ExampleObject(name = "Unauthorized", value = "{\"message\": \"error\"}")))
+                           examples = @ExampleObject(name = "invalid credentials", value = "{\"message\": \"error\"}")))
     @PostMapping("/login")
     public TokenResponse loginUser(@RequestBody @Valid  LoginRequest loginRequest, BindingResult bindingResult) {
         log.info("Logging in {}", loginRequest.getEmail());
@@ -88,9 +88,9 @@ public class AuthController {
         content = @Content(mediaType = "application/json",
                            schema = @Schema(implementation = UserDto.class),
                            examples = @ExampleObject(name = "User Info", value = "{\"id\": 1, \"email\": \"user@example.com\", \"name\": \"John Doe\", \"createdAt\": \"2021-01-01T00:00:00Z\", \"updatedAt\": \"2021-01-01T00:00:00Z\"}")))
-    @ApiResponse(responseCode = "401", description = "Unauthorized - Bad or Missing Token",
+    @ApiResponse(responseCode = "401", description = "Unauthorized",
     content = @Content(mediaType = "application/json",
-                       examples = @ExampleObject(name = "Empty object", value = "{}")))    
+                       examples = @ExampleObject(name = "Bad or Missing Token", value = "{}")))    
     @GetMapping("/me")
     public Optional<UserDto> getUserInfo(Authentication authentication) {
         log.info("Fetching user info for {}", authentication.getName());
