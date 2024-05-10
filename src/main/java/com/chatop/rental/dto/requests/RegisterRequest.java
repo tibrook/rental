@@ -4,27 +4,24 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
+@AllArgsConstructor
+@Data
 public class RegisterRequest {
 	
-	@Email
-    @NotEmpty
-    @Size(max = 255)
+	@Email(message = "Email should be in email format")
+	@NotEmpty(message = "Email cannot be empty.")
+	@Size(max = 255, message = "Email must not exceed 255 characters.")
     private final String email;
     
-    @Size(min = 8)
-    @NotEmpty
+	@NotEmpty(message = "Password cannot be empty.")
+	@Size(min = 8, message = "Password must be at least 8 characters long.")
     private final String password;
     
-    @Size(max = 255)
-    @NotBlank
+	@NotBlank(message = "Name is required and cannot be blank.")
+    @Size(max = 255, message = "Name must not exceed 255 characters.")
     private final String name;
 
-    public RegisterRequest(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-    }
 }

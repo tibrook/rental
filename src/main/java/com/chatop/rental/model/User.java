@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -46,11 +46,11 @@ public class User {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date updatedAt; 
+    private Timestamp updatedAt; 
     
 }

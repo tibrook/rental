@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
 import com.chatop.rental.dto.RentalDto;
 import com.chatop.rental.dto.requests.CreateRentalRequest;
 import com.chatop.rental.dto.requests.UpdateRentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.dto.responses.RentalDetailResponse;
+import com.chatop.rental.exception.UnAuthorizedException;
 import com.chatop.rental.model.Rental;
 import com.chatop.rental.repository.RentalRepository;
 import com.chatop.rental.service.interfaces.RentalService;
@@ -28,19 +28,17 @@ import com.chatop.rental.service.interfaces.UserService;
 @Service
 public class RentalServiceImpl implements RentalService {
     private static final Logger log = LoggerFactory.getLogger(RentalServiceImpl.class);
-
-    @Autowired
-    private RentalRepository rentalRepository;
-
-    @Autowired
-    private UserService userService;
+    private final RentalRepository rentalRepository;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+    private final StorageService storageService;
     
-    @Autowired
-    private ModelMapper modelMapper;
-    
-    @Autowired
-    private StorageService storageService;
-    
+    public RentalServiceImpl(UserService userService, ModelMapper modelMapper, RentalRepository rentalRepository,StorageService storageService) {
+    	this.userService = userService;
+    	this.modelMapper=modelMapper;
+    	this.rentalRepository = rentalRepository;
+    	this.storageService = storageService;
+    }
     /**
      * Creates a new rental listing.
      * @param rentalRequest CreateRentalRequest object containing rental details.
@@ -92,6 +90,11 @@ public class RentalServiceImpl implements RentalService {
      */
     @Override
     public Optional<RentalDetailResponse> getRentalById(Integer rentalId) {
+    	Optional<Rental> rentalOptional = rentalRepository.findById(rentalId);
+        if (!rentalOptional.isPresent()) {
+            log.info("No rental found with ID: {}", rentalId);
+            throw new UnAuthorizedException();
+        }	
         log.info("Fetching rental with ID {}", rentalId);
         return rentalRepository.findById(rentalId)
         		.map(rental -> {
@@ -103,14 +106,30 @@ public class RentalServiceImpl implements RentalService {
                 });
     }
     /**
-     * Updates a rental.
+    /**
+     * Updates a rental only if the authenticated user is the owner of the rental.
      * @param rentalId ID of the rental to update.
      * @param rentalRequest UpdateRentalRequest containing the updated rental details.
-     * @return Optional MessageResponse indicating the success of the rental update.
+     * @param authentication Authentication object representing the currently authenticated user.
+     * @return Optional<MessageResponse> indicating the success of the operation or empty if unauthorized.
      */
     @Override
-    public Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest) {
+    public Optional<MessageResponse> updateRental(Integer rentalId, UpdateRentalRequest rentalRequest, Authentication authentication) {
+        Optional<Rental> rentalOptional = rentalRepository.findById(rentalId);
+        if (!rentalOptional.isPresent()) {
+            // If no rental is found with the provided ID, return an appropriate response
+            log.info("No rental found with ID: {}", rentalId);
+            throw new UnAuthorizedException();
+        }
         return rentalRepository.findById(rentalId).map(rental -> {
+            // Check if the authenticated user is the owner of the rental
+        	Integer userId = userService.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new UnAuthorizedException())
+                    .getId();
+            if (!rental.getOwnerId().equals(userId)) {
+                log.info("Update rental not authorized. Bad owner: {}", rental.getOwnerId(), authentication.getName());
+                throw new UnAuthorizedException();
+            }
             rental.setName(rentalRequest.getName());
             rental.setSurface(rentalRequest.getSurface());
             rental.setPrice(rentalRequest.getPrice());

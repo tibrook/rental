@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,16 +25,16 @@ import com.chatop.rental.service.interfaces.UserService;
 @Service
 public class AuthServiceImpl implements AuthService{
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
+    private final UserService userService;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    
+    public AuthServiceImpl(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager) {
+    	this.userService = userService;
+    	this.jwtService=jwtService;
+    	this.authenticationManager = authenticationManager;
+    }
+ 
     /**
      * Authenticates the user and generates a JWT token.
      * @param loginRequest LoginRequest object containing user's email and password.
@@ -44,6 +42,9 @@ public class AuthServiceImpl implements AuthService{
      */
     public TokenResponse authenticateAndGenerateToken(LoginRequest loginRequest) {
         log.info("Authenticating user {}", loginRequest.getEmail());
+        // Use UserService to authenticate the user first
+        userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
+        // If authentication is successful, proceed with Spring Security Authentication.
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );
@@ -59,11 +60,7 @@ public class AuthServiceImpl implements AuthService{
      */
     public TokenResponse registerAndGenerateToken(RegisterRequest registerRequest) {
         log.info("Registering user {}", registerRequest.getEmail());
-        User newUser = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword())
-                                  .orElseThrow(() -> {
-                                      log.error("Registration failed for {}", registerRequest.getEmail());
-                                      return new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists");
-                                  });
+        User newUser = userService.registerUser(registerRequest.getEmail(), registerRequest.getName(), registerRequest.getPassword());
         log.info("User {} registered successfully", newUser.getEmail());
         return new TokenResponse(jwtService.generateToken(new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>())));
     }

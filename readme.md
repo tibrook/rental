@@ -27,17 +27,38 @@ cd rental
 Create a new MySQL database and import the database script:
 
 ```
-CREATE DATABASE rentaldb;
-USE rentaldb;
--- Copy / paste the content of script.sql in src/main/resources
+CREATE DATABASE rentalDb;
+USE rentalDb;
+```
+
+Import the SQL schema located in src/main/resources/script.sql:
+
+```
+SOURCE src/main/resources/script.sql;
+```
+
+Create a new user and grant all privileges on the created database
+
+```
+CREATE USER 'rentaluser'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON rentalDb.* TO 'rentaluser'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
 ### 3. Configure the application
 
-Copy the sample environment configuration file and modify it to match your local setup:
+Copy the sample environment configuration file :
 
 ```
 cp .env.example .env
+```
+
+Update env variables to match with your environment: 
+
+```
+DATABASE_URL=jdbc:mysql://localhost:3306/rentalDb
+DATABASE_USERNAME=rentaluser
+DATABASE_PASSWORD=your_password
 ```
 ### 4. Build and run the application
 
@@ -47,6 +68,7 @@ mvn spring-boot:run
 ```
 
 ## Usage
+
 Once the application is running, you can access endpoints defined in the Swagger UI at:
 
 ```
@@ -55,3 +77,11 @@ http://localhost:8082/swagger-ui.html
 ```
 
 This will provide you with an interactive API documentation where you can test out different endpoints.
+
+## Additional Notes
+
+Testing: To run the unit tests included with the application, use mvn test.
+Security Configurations: If you have specific security requirements, consider updating src/main/resources/application-security.properties.
+Database Backups: Regularly backup your database using MySQL dump tools or similar.
+
+By following these instructions, you should have a fully functional local setup of the Rental Service API, ready for development and testing purposes.

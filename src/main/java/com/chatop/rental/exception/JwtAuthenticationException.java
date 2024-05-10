@@ -1,4 +1,4 @@
-package com.chatop.rental.controller.advice;
+package com.chatop.rental.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

@@ -16,10 +16,10 @@ public class MessageRequest {
     @NotNull(message = "User ID is required")
     @Min(value = 1, message = "User ID must be greater than 0")
     @JsonProperty("user_id")
-    private Long userId;
+    private Integer userId;
     
     @NotNull(message = "Rental ID is required")
     @Min(value = 1, message = "Rental ID must be greater than 0")
     @JsonProperty("rental_id")
-    private Long rentalId;
+    private Integer rentalId;
 }
