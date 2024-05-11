@@ -87,7 +87,7 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "User details retrieved successfully",
         content = @Content(mediaType = "application/json",
                            schema = @Schema(implementation = UserDto.class),
-                           examples = @ExampleObject(name = "User Info", value = "{\"id\": 1, \"email\": \"user@example.com\", \"name\": \"John Doe\", \"createdAt\": \"2021-01-01T00:00:00Z\", \"updatedAt\": \"2021-01-01T00:00:00Z\"}")))
+                           examples = @ExampleObject(name = "User Info", value = "{\"id\": 1, \"email\": \"user@example.com\", \"name\": \"John Doe\", \"createdAt\": \"2024/05/10\", \"updatedAt\": \"2024/05/10\"}")))
     @ApiResponse(responseCode = "401", description = "Unauthorized",
     content = @Content(mediaType = "application/json",
                        examples = @ExampleObject(name = "Bad or Missing Token", value = "{}")))    

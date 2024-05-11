@@ -28,11 +28,12 @@ public class UserController {
     
     @Operation(summary = "Get user by ID", description = "Fetches details of a user by their ID")
     @ApiResponses(value = {
-    		@ApiResponse(responseCode = "200", description = "Successfully retrieved user details",
-                     content = @Content(mediaType = "application/json",
-                                        schema = @Schema(implementation = UserDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized",
-    	content = @Content(mediaType = "application/json",
+    		 @ApiResponse(responseCode = "200", description = "User details retrieved successfully",
+		        content = @Content(mediaType = "application/json",
+                           schema = @Schema(implementation = UserDto.class),
+                           examples = @ExampleObject(name = "User Info", value = "{\"id\": 1, \"email\": \"user@example.com\", \"name\": \"John Doe\", \"createdAt\": \"2024/05/10\", \"updatedAt\": \"2024/05/10\"}"))),
+		    @ApiResponse(responseCode = "401", description = "Unauthorized",
+		    	content = @Content(mediaType = "application/json",
                            examples = @ExampleObject(name = "Bad or missing token"))) 
     })
     @GetMapping("/{id}")

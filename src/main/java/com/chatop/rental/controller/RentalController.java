@@ -6,8 +6,8 @@ import com.chatop.rental.dto.requests.UpdateRentalRequest;
 import com.chatop.rental.dto.responses.MessageResponse;
 import com.chatop.rental.dto.responses.RentalDetailResponse;
 import com.chatop.rental.dto.responses.RentalListResponse;
-import com.chatop.rental.exception.AuthenticationException;
 import com.chatop.rental.exception.BadRequestException;
+import com.chatop.rental.exception.UnAuthorizedException;
 import com.chatop.rental.service.interfaces.RentalService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -144,7 +144,7 @@ public class RentalController {
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .collect(Collectors.joining(", "));
             log.error("Update rental : Validation failed {}", rentalRequest.getName(), errorDetails);
-            throw new AuthenticationException("");
+            throw new UnAuthorizedException();
         }
     	return rentalService.updateRental(id, rentalRequest, authentication);
     }
